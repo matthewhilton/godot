@@ -596,6 +596,46 @@ void ParticlesStorage::particles_request_process(RID p_particles) {
 	}
 }
 
+Transform3D ParticlesStorage::particles_get_transforms(RID p_particles, Vector3 pos) {
+	if (RSG::threaded) {
+		WARN_PRINT_ONCE("Calling this function with threaded rendering enabled stalls the renderer, use with care.");
+	}
+
+	const Particles *particles = particles_owner.get_or_null(p_particles);
+	ERR_FAIL_NULL_V(particles, Transform3D());
+
+	int total_amount = particles->amount;
+
+	Transform3D transform;
+
+	Vector<uint8_t> buffer = RD::get_singleton()->buffer_get_data(particles->particle_buffer);
+	ERR_FAIL_COND_V(buffer.size() != (int)(total_amount * sizeof(ParticleData)), Transform3D());
+
+	Transform3D inv = particles->emission_transform.affine_inverse();
+
+	if (buffer.size()) {
+		const uint8_t *data_ptr = (const uint8_t *)buffer.ptr();
+		uint32_t particle_data_size = sizeof(ParticleData) + sizeof(float) * particles->userdata_count;
+
+		for (int i = 0; i < total_amount; i++) {
+			const ParticleData &particle_data = *(const ParticleData *)&data_ptr[particle_data_size * i];
+
+			if (particle_data.active) {
+				Vector3 origin = Vector3(particle_data.xform[12], particle_data.xform[13], particle_data.xform[14]);
+				
+				if(origin.distance_to(pos) < transform.origin.distance_to(pos)) {
+					Vector3 bx = Vector3(particle_data.xform[0], particle_data.xform[1], particle_data.xform[2]);
+					Vector3 by = Vector3(particle_data.xform[4], particle_data.xform[5], particle_data.xform[6]);
+					Vector3 bz = Vector3(particle_data.xform[8], particle_data.xform[9], particle_data.xform[10]);
+					transform = Transform3D(bx,by,bz,origin);
+				}
+			}
+		}
+	}
+
+	return transform;
+}
+
 AABB ParticlesStorage::particles_get_current_aabb(RID p_particles) {
 	if (RSG::threaded) {
 		WARN_PRINT_ONCE("Calling this function with threaded rendering enabled stalls the renderer, use with care.");

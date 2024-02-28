@@ -125,6 +125,8 @@ public:
 	void set_trail_lifetime(double p_seconds);
 	void set_interp_to_end(float p_interp);
 
+	RID get_particle_rid();
+
 	bool is_emitting() const;
 	int get_amount() const;
 

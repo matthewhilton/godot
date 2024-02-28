@@ -464,6 +464,7 @@ public:
 	virtual void particles_set_draw_pass_mesh(RID p_particles, int p_pass, RID p_mesh) override;
 
 	virtual void particles_request_process(RID p_particles) override;
+	virtual Transform3D particles_get_transforms(RID p_particles, Vector3 pos) override;
 	virtual AABB particles_get_current_aabb(RID p_particles) override;
 	virtual AABB particles_get_aabb(RID p_particles) const override;
 

@@ -410,6 +410,10 @@ void GPUParticles3D::restart() {
 	set_process_internal(true);
 }
 
+RID GPUParticles3D::get_particle_rid() {
+	return particles;
+}
+
 AABB GPUParticles3D::capture_aabb() const {
 	return RS::get_singleton()->particles_get_current_aabb(particles);
 }
@@ -710,6 +714,7 @@ void GPUParticles3D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("restart"), &GPUParticles3D::restart);
 	ClassDB::bind_method(D_METHOD("capture_aabb"), &GPUParticles3D::capture_aabb);
+	ClassDB::bind_method(D_METHOD("get_particle_rid"), &GPUParticles3D::get_particle_rid);
 
 	ClassDB::bind_method(D_METHOD("set_sub_emitter", "path"), &GPUParticles3D::set_sub_emitter);
 	ClassDB::bind_method(D_METHOD("get_sub_emitter"), &GPUParticles3D::get_sub_emitter);

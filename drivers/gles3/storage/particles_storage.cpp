@@ -371,6 +371,10 @@ void ParticlesStorage::particles_request_process(RID p_particles) {
 	}
 }
 
+Transform3D ParticlesStorage::particles_get_transforms(RID p_particles, Vector3 pos) {
+	return Transform3D();
+}
+
 AABB ParticlesStorage::particles_get_current_aabb(RID p_particles) {
 	if (RSG::threaded) {
 		WARN_PRINT_ONCE("Calling this function with threaded rendering enabled stalls the renderer, use with care.");
