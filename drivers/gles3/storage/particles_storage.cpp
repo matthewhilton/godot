@@ -371,8 +371,8 @@ void ParticlesStorage::particles_request_process(RID p_particles) {
 	}
 }
 
-Transform3D ParticlesStorage::particles_get_transforms(RID p_particles, Vector3 pos) {
-	return Transform3D();
+Array ParticlesStorage::particles_get_transforms(RID p_particles, AABB aabb) {
+	return Array();
 }
 
 AABB ParticlesStorage::particles_get_current_aabb(RID p_particles) {

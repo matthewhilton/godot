@@ -596,20 +596,20 @@ void ParticlesStorage::particles_request_process(RID p_particles) {
 	}
 }
 
-Transform3D ParticlesStorage::particles_get_transforms(RID p_particles, Vector3 pos) {
+Array ParticlesStorage::particles_get_transforms(RID p_particles, AABB aabb) {
 	if (RSG::threaded) {
 		WARN_PRINT_ONCE("Calling this function with threaded rendering enabled stalls the renderer, use with care.");
 	}
 
 	const Particles *particles = particles_owner.get_or_null(p_particles);
-	ERR_FAIL_NULL_V(particles, Transform3D());
+	ERR_FAIL_NULL_V(particles, Array());
 
 	int total_amount = particles->amount;
 
-	Transform3D transform;
+	Array transforms = Array();
 
 	Vector<uint8_t> buffer = RD::get_singleton()->buffer_get_data(particles->particle_buffer);
-	ERR_FAIL_COND_V(buffer.size() != (int)(total_amount * sizeof(ParticleData)), Transform3D());
+	ERR_FAIL_COND_V(buffer.size() != (int)(total_amount * sizeof(ParticleData)), Array());
 
 	Transform3D inv = particles->emission_transform.affine_inverse();
 
@@ -619,21 +619,22 @@ Transform3D ParticlesStorage::particles_get_transforms(RID p_particles, Vector3 
 
 		for (int i = 0; i < total_amount; i++) {
 			const ParticleData &particle_data = *(const ParticleData *)&data_ptr[particle_data_size * i];
+			Vector3 origin = Vector3(particle_data.xform[12], particle_data.xform[13], particle_data.xform[14]);
 
-			if (particle_data.active) {
-				Vector3 origin = Vector3(particle_data.xform[12], particle_data.xform[13], particle_data.xform[14]);
-				
-				if(origin.distance_to(pos) < transform.origin.distance_to(pos)) {
-					Vector3 bx = Vector3(particle_data.xform[0], particle_data.xform[1], particle_data.xform[2]);
-					Vector3 by = Vector3(particle_data.xform[4], particle_data.xform[5], particle_data.xform[6]);
-					Vector3 bz = Vector3(particle_data.xform[8], particle_data.xform[9], particle_data.xform[10]);
-					transform = Transform3D(bx,by,bz,origin);
-				}
+			// For some reason, particle_data.active is always true (probably a bug)
+			// So we use custom.r > 0.0 instead.
+
+			if (particle_data.custom[0] > 0.0 && aabb.has_point(origin)) {
+				Vector3 bx = Vector3(particle_data.xform[0], particle_data.xform[1], particle_data.xform[2]);
+				Vector3 by = Vector3(particle_data.xform[4], particle_data.xform[5], particle_data.xform[6]);
+				Vector3 bz = Vector3(particle_data.xform[8], particle_data.xform[9], particle_data.xform[10]);
+				Transform3D transform = Transform3D(bx,by,bz,origin);
+				transforms.append(transform);
 			}
 		}
 	}
 
-	return transform;
+	return transforms;
 }
 
 AABB ParticlesStorage::particles_get_current_aabb(RID p_particles) {
