@@ -427,6 +427,10 @@ void GPUParticles3D::emit_particle(const Transform3D &p_transform, const Vector3
 	RS::get_singleton()->particles_emit(particles, p_transform, p_velocity, p_color, p_custom, p_emit_flags);
 }
 
+RID GPUParticles3D::get_rid() const {
+	return particles;
+}
+
 void GPUParticles3D::_attach_sub_emitter() {
 	Node *n = get_node_or_null(sub_emitter);
 	if (n) {
@@ -739,6 +743,8 @@ void GPUParticles3D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_amount_ratio", "ratio"), &GPUParticles3D::set_amount_ratio);
 	ClassDB::bind_method(D_METHOD("get_amount_ratio"), &GPUParticles3D::get_amount_ratio);
+
+	ClassDB::bind_method(D_METHOD("get_rid"), &GPUParticles3D::get_rid);
 
 	ADD_SIGNAL(MethodInfo("finished"));
 
