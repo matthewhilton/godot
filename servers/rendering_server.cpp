@@ -2682,6 +2682,7 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("particles_set_draw_order", "particles", "order"), &RenderingServer::particles_set_draw_order);
 	ClassDB::bind_method(D_METHOD("particles_set_draw_passes", "particles", "count"), &RenderingServer::particles_set_draw_passes);
 	ClassDB::bind_method(D_METHOD("particles_set_draw_pass_mesh", "particles", "pass", "mesh"), &RenderingServer::particles_set_draw_pass_mesh);
+	ClassDB::bind_method(D_METHOD("particles_get_buffer_rid", "particles"), &RenderingServer::particles_get_buffer_rid);
 	ClassDB::bind_method(D_METHOD("particles_get_current_aabb", "particles"), &RenderingServer::particles_get_current_aabb);
 	ClassDB::bind_method(D_METHOD("particles_set_emission_transform", "particles", "transform"), &RenderingServer::particles_set_emission_transform);
 

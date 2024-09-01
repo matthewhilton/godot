@@ -606,6 +606,12 @@ void ParticlesStorage::particles_request_process(RID p_particles) {
 	}
 }
 
+RID ParticlesStorage::particles_get_buffer_rid(RID p_particles) {
+	const Particles *particles = particles_owner.get_or_null(p_particles);
+	ERR_FAIL_NULL_V(particles, RID());
+	return particles->particle_buffer;
+}
+
 AABB ParticlesStorage::particles_get_current_aabb(RID p_particles) {
 	const Particles *particles = particles_owner.get_or_null(p_particles);
 	ERR_FAIL_NULL_V(particles, AABB());

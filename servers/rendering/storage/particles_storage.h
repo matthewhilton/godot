@@ -82,6 +82,7 @@ public:
 	virtual void particles_set_draw_pass_mesh(RID p_particles, int p_pass, RID p_mesh) = 0;
 
 	virtual void particles_request_process(RID p_particles) = 0;
+	virtual RID particles_get_buffer_rid(RID p_particles) = 0;
 	virtual AABB particles_get_current_aabb(RID p_particles) = 0;
 	virtual AABB particles_get_aabb(RID p_particles) const = 0;
 

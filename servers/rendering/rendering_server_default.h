@@ -529,6 +529,7 @@ public:
 	FUNC2(particles_set_draw_passes, RID, int)
 	FUNC3(particles_set_draw_pass_mesh, RID, int, RID)
 
+	FUNC1R(RID, particles_get_buffer_rid, RID)
 	FUNC1R(AABB, particles_get_current_aabb, RID)
 	FUNC2(particles_set_emission_transform, RID, const Transform3D &)
 	FUNC2(particles_set_emitter_velocity, RID, const Vector3 &)
